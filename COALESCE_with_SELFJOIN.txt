@@ -1,0 +1,13 @@
+-- Using a table called company I Joined the table to itself to add information about a companys parent to the original company info.
+Then I used the COALESCE() function to get the parent company ticker(when avalible) and the Original company ticker When parent company 
+ticker was not avalible. Then using a second table called fortune500 I used an INNER JOIN to bring the ticker column to the company table.
+
+
+SELECT 
+    company_original.name, title, rank
+FROM company AS company_original
+    LEFT JOIN company AS company_parent
+    ON company_original.parent_id = company_parent.parent_id
+    INNER JOIN fortune500
+    ON COALESCE (Company_original.ticker, company_parent.ticker) = fortune500.ticker
+ORDER BY rank;
