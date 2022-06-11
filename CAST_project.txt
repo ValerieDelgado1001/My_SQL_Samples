@@ -1,0 +1,29 @@
+-- Using PostgreSQL I have created a sample project quering using Cast() with the :: syntax. This query uses CAST to summerize the distribution 
+of numeric values to find the companies that had revenue growth. I used the Fortune500 table years 2016-2017
+
+--I wanted to Know was 2017 a good or bad year for revenue for the Fortune500 companies? Utilizing the Fortune500 data I examine the change 
+from 2016-2017 in the distribution of revenues_change.
+
+SELECT revenues_change, COUNT(*) AS count
+FROM fortune500
+GROUP BY revenues_change 
+ORDER BY revenues_change;
+
+
+--I found that the return shows a float and that there are some discrepencies to get a cleaner look at the data I Cast the revenues_change
+as an integer.
+
+
+SELECT revenues_change::INTEGER, COUNT(*) AS count
+FROM fortune500
+GROUP BY revenues_change::INTEGER
+Order By revenues_change::INTEGER;
+
+
+--The data looks cleaner and easier to read. Now I just need to count how many of the companies saw an increase.
+
+SELECT COUNT(*)
+FROM fortune500
+WHERE revenues_change > 0;
+
+--This Query returns the count of how many companies in the data saw an increase above 0. It was 298!

@@ -1,0 +1,30 @@
+-- Created a CTE containting an ordered count of values using Row_number() Window function to find the MODE() of OrderPrice.Then I Wrote
+ a Query using the CTE to pick the value with the Highest row #. I added a more detailed explanation of what I did to show my thought 
+process.
+
+
+
+
+--First I partitoined orderprice into groups and ordered them in ascending order. Then numbered and aliased to UnitPriceFrequency and 
+aliased the entire query in CTE as ModePrice.
+
+WITH ModePrice( OrderPrice, UnitPriceFrequency)
+  AS (
+SELECT OrderPrice,
+    ROW_NUMBER() Over(PARTITION BY orderprice ORDER BY Orderprice)
+                       AS UnitPriceFrequency
+FROM Orders
+)
+
+
+-- Then I used a select statement with a derived table to find the highest numbered UnitPriceFrequency and return the OrderPrice that 
+was associated with that observation.
+
+
+SELECT OrderPrice AS ModeOrderPrice 
+FROM ModePrice
+WHERE UnitPriceFrequency IN (
+    SELECT MAX(UnitPriceFrequency) 
+    FROM ModePrice)
+
+

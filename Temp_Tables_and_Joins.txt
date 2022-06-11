@@ -1,0 +1,25 @@
+--Using a temp table(SELECT INTO) and joins, I select the longest tracks from every album and collect them in a new table called #maxtracks.
+then I order the list from greatest to least and alphabeticaly by artist.
+
+SELECT album.title AS album_title,
+    aritst.name AS artist,
+    MAX(track.milliseconds/(1000*60)% 60) AS Max_track_length_mins
+
+INTO #maxtracks
+FROM album
+INNER JOIN artist
+ON album.artist_id = artist.artist_id
+INNER JOIN track 
+ON track.album_id = album.album_id
+GROUP BY artist_id,
+    album.title,
+    artist.name,
+    album.album_id
+
+SELECT
+    album_title,
+    artist,
+    max_track_length_mins
+FROM #maxtracks
+ORDER BY max_track_lenght_mins DESC,
+    artist;
