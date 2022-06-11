@@ -1,9 +1,0 @@
--- I created a derived table returning Age and MaxBloodPressure from a table called Kidney and grouped by Age. 
-Joined the derived tble to the main query on the BloodPressure equal to the MaxBloodPressure and Age.
-
-SELECT *
-FROM Kidney a
-JOIN (SELECT Age, MAX(BloodPressure) AS MaxBloodPressure
-            FROM Kidney GROUP BY Age) b
-ON a.bloodPressure = b.MaxBloodPressure
-AND a.Age = b.Age
