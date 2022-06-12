@@ -1,0 +1,17 @@
+--In this example I count the gold medals that France (FRA) and the UK (GBR), and Germany (GER) have earned per country and year using 
+pivoting and ranking in the summer_medals dataset.
+
+ 
+SELECT 
+    country,
+    year,
+    COUNT(*) AS Medals
+FROM summer_medals
+WHERE 
+    country IN ('FRA', 'GBR', 'GER')
+    AND year IN (2004, 2008, 2012)
+    AND medal = 'Gold'
+GROUP BY country, year
+ORDER BY country, year;
+
+	
