@@ -1,0 +1,21 @@
+--Reigning Champions by gender uisng the Summer_medals dataset in the Olypmpics database.
+-- In this sample I Show how I use LAG() and CTEs to create a list of all the current and former javilin throw champions since 
+the Year 2000. 
+
+
+WITH TRACK_and_FEILD_Gold AS (
+	SELECT DISTINCT gender, year, country
+	FROM Summer_Medals
+	WHERE 
+	    year >= 2000 AND 
+ 	    event = 'Javelin Throw' AND
+   	    medal = 'Gold')
+
+SELECT 
+    Gender, year,
+    country AS Champion,
+    LAG(country) OVER(PARTITION BY gender ORDER BY year) AS Last_Champion
+
+FROM TRACK_and_FEILD_Gold
+ORDER BY gender,
+         year;
