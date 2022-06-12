@@ -1,0 +1,20 @@
+--In this sample I show how I achive returning a running total (using aggregation with a window function) of medals per athlete. I am 
+returning the athletes, the number of medals they earned, and the medals running total, ordered by the athletes' names in alphabetical 
+order.
+
+
+WITH Athlete_Medals AS (
+	SELECT 
+	athlete, COUNT(*) AS Medals
+	FROM summer_medals
+	WHERE
+	    country = 'USA' AND medals = 'Gold'
+	    AND year >= 2000
+	GROUP BY athlete)
+SELECT 
+    athlete,
+    Medals,
+    SUM(Medals) OVER(ORDER BY athlete) AS Max_Medals
+
+FROM Athlete_Medals
+ORDER BY athlete;
