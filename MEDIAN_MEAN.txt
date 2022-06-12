@@ -1,0 +1,10 @@
+-- In this sample I show how I can get the Median using the Percentile_disc() function and the Mean using the AVG() function. 
+
+
+SELECT sector,
+    AVG(assets) AS mean,
+    percentile_disc(0.5) WITHIN GROUP(ORDER BY assests) AS median
+
+FROM fortune500
+GROUP BY sector
+ORDER BY mean;
