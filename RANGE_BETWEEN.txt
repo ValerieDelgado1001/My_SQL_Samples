@@ -1,0 +1,18 @@
+--Here I am returning the year and the city (using the RANGE BETWEEN()window function)in which each olympic games were held. 
+I fetch the last city in which the olympic games were held.
+
+WITH Hosts AS (
+	SELECT DISTINCT year, city
+	FROM summer_medals)
+
+SELECT 
+    year,
+    city,
+    LAST_VALUE(city) OVER(
+		ORDER BY year
+		RANGE BETWEEN
+		UNBOUND PRECEDING AND 
+		UNBOUND FOLLOWING
+	    ) AS Last_city
+FROM Hosts
+ORDER BY year;	
