@@ -1,0 +1,25 @@
+-- In this example I summarize the distribution of the number of questions with the tag 'dropbox' on the Stackoverflow data per day by 
+binning the data using generate_series() function. 
+
+WITH bins AS (
+	SELECT generate_series(2200, 3050, 50) AS lower
+	       generate_series(2250, 3100, 50) AS upper),
+
+dropbox AS (
+	SELECT question_count
+	FROM Stackoverflow
+	WHERE tag = 'dropbox')
+
+SELECT lower, upper, COUNT(question_count)
+FROM bins
+    LEFT JOIN dropbox
+    ON question_count >= lower
+    AND question_count < upper
+GROUP BY lower, upper
+ORDER BY lower;
+
+
+-- I started by collecting the 'dropbox' data in the question_count column in the Stackoverflow data frame. Then I aliased the query 
+as a CTE called dropbox to use in the final query. Then I built a query generating a series of bins with upper and lower values and
+aliased that CTE as bins. Lastly, I created the final query that joined the bins and drop box tables to show the summary of the 
+distribution of the question_count where the questions had the tag 'drop box' in the data.
