@@ -1,0 +1,17 @@
+--In this Sample I Practiced Fetching (using the LEAD() window function) the current Gold medalist and the Gold medalist 3 
+competitions ahead of the current row for each year.
+
+WITH Discus_Medalists AS (
+	SELECT DISTINCT year, athlete
+	FROM summer_medals
+	WHERE medal = 'Gold'
+	    AND event = 'Discus Throw'
+	    AND gender = 'women'
+	    AND year >= 2000)
+
+SELECT
+    year,
+    athlete,
+    LEAD(athlete, 3) OVER(ORDER BY year) AS future_champion
+FROM Discus_Medalists
+ORDER BY year;
