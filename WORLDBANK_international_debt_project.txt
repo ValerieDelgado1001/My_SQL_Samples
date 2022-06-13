@@ -1,0 +1,53 @@
+-- In this project I examine the WORLD BANK database. The data I looked at came from the International_debt from years 1970-2015.
+
+
+--I start by looking at a sample section of the dataset to get familiar with what types of data I will be analyzing.
+  
+
+SELECT * FROM international_debt LIMIT 10;
+
+
+--I can see in the table that there are repeating names in the country name column. my next step is to count the unique countries in the 
+table.
+
+
+SELECT 
+    COUNT(DISTINCT country_name) AS total_distict_countries
+FROM internationa debt;
+
+
+--There are 124 total countries in this dataset. I also noticed that the column labeled indicator_code also seems to have some repeating
+values. I want to know how many specific indicator_codes does each distinct country have?
+
+
+
+SELECT DISTINCT indicator_code AS  disticnt_debt_indicators
+FROM international_debt
+ORDER BY distinct_debt_indicators;
+
+
+--Now the data is easier to read and I can see each country and the list of distinct debt indicators for each country.
+I would like to know what the total debt is for each country.
+
+
+SELECT 
+    ROUND(SUM(debt)/1000000,2) AS total_debt
+FROM international_debt;
+
+
+--The total debt column is easier to read using the ROUND function but now I am just looking for the country that has the highest amount of
+debt.
+
+
+SELECT 
+    country_name,
+    ROUND(SUM(debt)/1000000,2) AS total_debt
+FROM international_debt
+GROUP BY country_name
+ORDER BY total_debt DESC
+LIMIT 1;
+
+
+-- In this Project I discovered information from the international_debt dataset and organized the unique country names and the distinct 
+indicator codes. Then I forund the total debt per country and cleaned up the data to make it more readable with the ROUND function. Using 
+those techniques I was able to find the country with the highest total debt.
