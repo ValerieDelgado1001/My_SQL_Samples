@@ -1,0 +1,83 @@
+--This is a project that I worked on using NYC public school Test results scores. 
+
+-- Started by familiarizing myself with the dataset.
+
+
+SELECT * FROM schools LIMIT 10;
+
+
+--I noticed that some data was missing in the percent_tested column and I wanted to know how many schools had missing data in that column.
+I needed to know this to see if it was a wide spread problem with this dataset. 
+
+
+SELECT COUNT(*) - COUNT(precent_tested) AS num_tested_missing,
+    COUNT(*) AS num_schools
+FROM schools;
+
+
+--20 schools were missing data for the percent_tested column. I noticed in the data that some of the schools had the same building code
+so the num_schools in the last query may not represent the total number of unique schools in the dataset. 
+
+
+SELECT COUNT(DISTINCT building_code) AS num_school_buildings
+FROM schools;
+
+
+
+--There are 233 unique school building_codes. Now we know that the 20 schools with missing data may not be that wide spread of an issue.
+now we move on to analyzing the school preformance. Each school reports individually and not by building code so I will use the individual
+data to get the average math score of each school that reaches atleast 80%. The score is out of 800 so 80% would be 640.
+
+
+SELECT school_name,
+    average_math
+FROM schools
+WHERE average_math >= 640
+ORDER BY average_math DESC;
+
+
+--Only 10 public schools in NYC with an average math score of atleast 640. Now I am getting curious and I would like to Know what the lowest
+reading score is from all the schools.
+
+
+SELECT MIN(average_reading) AS lowest_reading
+FROM schools;
+
+
+--That was interesting but not note worthy so I move on. Now I am looking for the school with the highest average writing score.
+
+SELECT school_name, 
+     MAX(average_writing) AS max_writing
+FROM schools
+GROUP BY school_name
+ORDER BY max_writing DESC
+LIMIT 1;
+
+
+--Now we have found something interesting! The top writing school was the same school that got the top math score. I wonder what other 
+schools are showing excellent scores across the board?
+
+
+SELECT school_name, SUM(average_math + average_reading + average_writing) AS average_sat
+FROM schools
+GROUP BY school_name
+ORDER BY average_sat DESC
+LIMIT 10;
+
+
+--Out of the top ten I noticed that the top 4 schools all had scores above 2000. I noticed at the beginning that the schools could also 
+be grouped by borough. I wonder how these top scoring schoools effect the score of school performance by borough.
+
+
+SELECT borough, COUNT(*) AS num_schools, 
+    SUM(average_reading + average_writitng + average_math)/ COUNT(*) AS average_borough_sat
+FROM schools
+GROUP BY borough
+ORDER BY average_borough_sat DESC;
+
+
+
+--From these queries I analyzed The top preforming schools from NYC by prefomance scores and saw how those scores effected the groups of 
+schools in each borough.
+
+ 
