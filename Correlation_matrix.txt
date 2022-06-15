@@ -1,0 +1,42 @@
+-- In this example I am computing the correleations between each pair of profits, profits_change, and revenues_change from the fortune500 
+dataset. Showing how I use Temp tables, the correlation function, and INSERT INTO to pull together calculations into a matrix that exhibits
+the correlations between the variables.
+
+
+DROP TABLE IF EXISTS correlations;
+
+CREATE TEMP TABLE correlations AS 
+
+SELECT 'profits'::varchar AS measure,
+	corr(profits, profits) AS profits,
+	corr(profits, profits_change) AS profits_change,
+	corr(profits, revenues_change) AS revenues_change
+FROM 
+    fortune500;
+
+INSERT INTO correlations
+SELECT 'profits_change'::varchar AS measure
+	corr(profits_change, profits) AS profits,
+	corr(profits_change, profits_change) AS profits_change,
+	corr(profits_change, revenues_change) AS revenues_change
+FROM
+    fortune500;
+
+INSERT INTO correlations
+SELECT 'revenues_change'::varchar AS measure
+	corr(revenues_change, profits) AS profits,
+	corr(revenues_change, profits_change) AS profits_change,
+	corr(revenues_change, revenues_change) AS revenues_change
+FROM
+    fortune500;
+
+-- After building the matrix, I select all the rows and columns in the correlations table to view it. In order to have a clean look to the 
+matrix I Cast the double precision that was created by the corralation function, into numeric and round the number to 2 decimal places.
+
+
+SELECT measure,
+	ROUND(profits::numeric, 2) AS profits,
+	ROUND(profits_change::numeric, 2) AS profits_change,
+	ROUND(revenues_change::numeric, 2) AS revenues_change
+FROM
+    correlations;
