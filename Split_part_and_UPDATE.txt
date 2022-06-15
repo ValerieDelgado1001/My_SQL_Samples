@@ -1,0 +1,28 @@
+-- In this sample I am aggregating text values to find the most common requests using rtrim() and split_part() then updating the text in
+the evanston311 dataset. The data set has 150 distinct values in category but some of them start with the text "main category-details". 
+This is the distinct value we are looking for that we need to change to a new standardized value based off other contents in the text. 
+
+DROP TABLE IF EXISTS recode;
+
+CREATE TEMP TABLE recode AS 
+ 
+SELECT DISTINCT category,
+	rtrim(split_part(category, '-',1)) AS standardized
+FROM
+    evanston311;
+
+UPDATE recode SET standardized = 'Trash Cart' WHERE LIKE 'Trash%Cart';
+UPDATE recode SET standardized = 'Snow Removal' WHERE LIKE 'Snow%Removal%';
+UPDATE recode SET standardized = 'UNUSED' WHERE IN ('THIS REQUEST IS INACTIVE...Trash Cart',
+						'(DO NOT USE) water bill','DO NOT USE Trash',
+                                                'NO LONGER IN USE');
+
+SELECT
+    standardized, COUNT(*) 
+FROM 
+    evanston311
+LEFT JOIN recode
+ON evanston.category = recode.category
+GROUP BY standardized
+ORDER BY COUNT(*) DESC;
+
