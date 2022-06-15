@@ -1,0 +1,65 @@
+-- This example project shows me analyzing movie data to see what the preferences of customers in the MoviesNow database are.
+
+-- Here I join datasets to show the records in the renting dataset with the information in movies that has atleat 4 ratings starting from 
+2018-04-01. 
+
+
+
+SELECT *
+FROM renting AS r
+Left JOIN movies AS m
+ON r.movie_id = m.movie_id 
+WHERE r.movie_id IN (
+	SELECT movie_id
+	FROM renting
+	GROUP BY movie_id
+	HAVING COUNT(rating) >= 4)
+AND r.date_renting >= '2018-04-01';
+
+
+--Next for each genre I get the average rating, number of movie rentals, and the number of distinct movies ordered by the top avgerage
+rating first.
+
+
+SELECT m.genre
+    AVG(r.rating) AS avg_rating,
+    COUNT(r.rating) AS n_rating,
+    COUNT(*) AS n_renting,
+    COUNT(DISTINCT m.movie_id) AS n_movies
+FROM 
+    renting AS r
+LEFT JOIN movies AS m
+ON m.movie_id = r.movie_id
+WHERE r.movie_id IN (
+	SELECT movie_id
+	FROM renting
+	GROUP BY movie_id
+	HAVING COUNT(rating) >= 4)
+AND r.date_renting >= '2018-04-01'
+GROUP BY m.genre
+ORDER BY avg_rating DESC;
+
+
+--The last part of this project collects the combination of actors nationality and gender, calculating of the average rating, number of 
+ratings and the number of movie rentals along with the number of actors. Returning the results for all aggrigation levels in a pivot table.
+
+
+SELECT a.nationality,
+    a.gender,
+    AVG(r.rating) AS avg_rating,
+    COUNT(r.rating) AS n_rating,
+    COUNT(*) AS n_renting,
+    COUNT(DISTINCT a.actor_id) AS n_actors
+FROM renting AS r
+LEFT JOIN actsin AS ai
+ON ai.movie_id = r.movie_id
+LEFT JOIN actors AS a
+ON ai.actor_id = a.actor_id
+WHERE r.movie_id IN (
+	SELECT movie_id
+	FROM renting
+	GROUP BY movie_id
+	HAVING COUNT(rating) >= 4)
+AND r.date_renting >= '2018-04-01'
+GROUP BY CUBE(a.nationality, a.gender);
+
