@@ -1,0 +1,14 @@
+--In this sample I am prepairing a report about national preferences of the customers from MoviesNow compairing the average rating of movies
+across countries and genres. This requires me to use the CUBE() function to collect all possible combinations of country and genre ratings 
+of movies in a pivot table. 
+
+SELECT 
+    c.country
+    m.genre
+    AVG(r.rating) AS avg_rating
+FROM renting AS r
+LEFT JOIN movies AS m
+ON m.movie_id = r.movie_id
+LEFT JOIN customers AS c
+ON r.customers_id = c.customers_id
+GROUP BY CUBE(c.country, m.genre);
